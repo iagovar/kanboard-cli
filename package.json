@@ -4,7 +4,7 @@
   "description": "Professional CLI for Kanboard",
   "main": "src/bin/index.ts",
   "bin": {
-    "kanboard": "./src/bin/index.ts"
+    "kanboard-cli": "./src/bin/index.ts"
   },
   "scripts": {
     "test": "bun test",

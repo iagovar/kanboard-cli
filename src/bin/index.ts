@@ -9,21 +9,21 @@ import packageJson from '../../package.json';
 const program = new Command();
 
 program
-  .name('kanboard')
+  .name('kanboard-cli')
   .description('Professional CLI for Kanboard API interaction.')
   .version(packageJson.version)
   .addHelpText('after', `
 Example usage:
-  $ kanboard project list
-  $ kanboard task list 1
-  $ kanboard task show 10
-  $ kanboard task create -p 1 -t "My New Task"
-  $ kanboard task move 10 2
-  $ kanboard task comment add 10 "Important info"
+  $ kanboard-cli project list
+  $ kanboard-cli task list 1
+  $ kanboard-cli task show 10
+  $ kanboard-cli task create -p 1 -t "My New Task"
+  $ kanboard-cli task move 10 2
+  $ kanboard-cli task comment add 10 "Important info"
 
 To see more help for a specific command:
-  $ kanboard task --help
-  $ kanboard project --help
+  $ kanboard-cli task --help
+  $ kanboard-cli project --help
   `);
 
 // Project Commands

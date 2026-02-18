@@ -10,7 +10,7 @@ npm install
 npm link
 ```
 
-Now you can use the `kanboard` command anywhere.
+Now you can use the `kanboard-cli` command anywhere.
 
 ## Configuration
 
@@ -28,56 +28,56 @@ KB_TOKEN=your_token_here
 
 #### List all projects
 ```bash
-kanboard project list
+kanboard-cli project list
 ```
 
 ### Tasks
 
 #### List tasks in a project
 ```bash
-kanboard task list <project_id>
+kanboard-cli task list <project_id>
 ```
 
 #### Show task details
 ```bash
-kanboard task show <task_id>
+kanboard-cli task show <task_id>
 ```
 
 #### Create a new task
 ```bash
-kanboard task create -p <project_id> -t "Task Title" [--color red] [--priority 2]
+kanboard-cli task create -p <project_id> -t "Task Title" [--color red] [--priority 2]
 ```
 
 #### Move a task to another column
 ```bash
-kanboard task move <task_id> <column_id>
+kanboard-cli task move <task_id> <column_id>
 ```
 
 #### Assign a task to a user
 ```bash
-kanboard task assign <task_id> <user_id>
+kanboard-cli task assign <task_id> <user_id>
 ```
 
 #### Close a task
 ```bash
-kanboard task close <task_id>
+kanboard-cli task close <task_id>
 ```
 
 #### Remove a task
 ```bash
-kanboard task remove <task_id>
+kanboard-cli task remove <task_id>
 ```
 
 ### Comments
 
 #### Add a comment
 ```bash
-kanboard task comment add <task_id> "Your comment text"
+kanboard-cli task comment add <task_id> "Your comment text"
 ```
 
 #### List comments
 ```bash
-kanboard task comment list <task_id>
+kanboard-cli task comment list <task_id>
 ```
 
 ## Tech Stack
