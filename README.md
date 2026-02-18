@@ -80,6 +80,24 @@ kanboard-cli task comment add <task_id> "Your comment text"
 kanboard-cli task comment list <task_id>
 ```
 
+## Distribution
+
+### Build Debian Package (.deb)
+
+You can build a standalone Debian package that includes everything needed to run the CLI (no Bun/Node.js required on the target system).
+
+```bash
+bun run build:deb
+```
+
+The package will be generated in `dist/kanboard-cli_<version>_amd64.deb`.
+
+### Install .deb Package
+
+```bash
+sudo dpkg -i dist/kanboard-cli_1.0.0_amd64.deb
+```
+
 ## Tech Stack
 
 - **Commander.js**: CLI framework.
