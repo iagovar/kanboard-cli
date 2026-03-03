@@ -5,7 +5,7 @@ import chalk from 'chalk';
 interface Task {
   id: string;
   title: string;
-  is_active: string;
+  is_active: string | number;
   priority: string;
   owner_name: string | null;
   project_id: string;
@@ -93,7 +93,7 @@ export async function showTask(taskId: string): Promise<void> {
     console.log(`${chalk.bold('Owner:')}      ${task.owner_name || chalk.dim('Unassigned')}`);
     console.log(`${chalk.bold('Column:')}     ${task.column_name}`);
     console.log(`${chalk.bold('Date Create:')} ${new Date(task.date_creation * 1000).toLocaleString()}`);
-    
+
     if (task.description) {
       console.log(`\n${chalk.bold('Description:')}\n${task.description}`);
     }
@@ -144,7 +144,7 @@ export async function moveTask(taskId: string, columnId: string): Promise<void> 
   try {
     // We need project_id and swimlane_id for moveTaskPosition to be reliable
     const task = await api.call<any>('getTask', { task_id: parseInt(taskId, 10) });
-    
+
     if (!task) {
       console.error(chalk.red.bold(`\n✘ Task #${taskId} not found.`));
       return;
@@ -227,10 +227,78 @@ export async function listComments(taskId: string): Promise<void> {
 
     for (const c of comments) {
       console.log(`${chalk.bold(c.username || 'System')} ${chalk.dim(`(${new Date(c.date_creation * 1000).toLocaleString()})`)}:`);
-      console.log(`${c.content}\n`);
+      console.log(`${c.comment}\n`);
     }
     console.log(chalk.gray('─'.repeat(40)) + '\n');
   } catch (err: any) {
     console.error(chalk.red.bold(`\nError fetching comments for task #${taskId}:`), err.message);
+  }
+}
+
+interface UpdateTaskOptions {
+  task_id: string;
+  title?: string;
+  description?: string;
+  priority?: string;
+  color?: string;
+}
+
+/**
+ * Command: kanboard task update <task_id> [--title <title>] [--description <desc>] [--priority <int>] [--color <color>]
+ */
+export async function updateTask(options: UpdateTaskOptions): Promise<void> {
+  const { task_id, title, description, priority, color } = options;
+
+  try {
+    const params: any = { id: parseInt(task_id, 10) };
+    if (title) params.title = title;
+    if (description) params.description = description;
+    if (priority) params.priority = parseInt(priority, 10);
+    if (color) params.color_id = color;
+
+    const result = await api.call<boolean>('updateTask', params);
+
+    if (result) {
+      console.log(chalk.green.bold(`\n✔ Task #${task_id} updated successfully!`));
+    } else {
+      console.error(chalk.red.bold(`\n✘ Failed to update task #${task_id}.`));
+    }
+  } catch (err: any) {
+    console.error(chalk.red.bold(`\nError updating task #${task_id}:`), err.message);
+  }
+}
+
+/**
+ * Command: kanboard task search <project_id> <query>
+ */
+export async function searchTasks(projectId: string, query: string): Promise<void> {
+  try {
+    // Kanboard API doesn't have a direct search, so we get all tasks and filter
+    const tasks = await api.call<Task[]>('getAllTasks', { project_id: parseInt(projectId, 10) });
+
+    const lowerQuery = query.toLowerCase();
+    const filtered = tasks.filter(t =>
+      t.title.toLowerCase().includes(lowerQuery) ||
+      (t.description && t.description.toLowerCase().includes(lowerQuery))
+    );
+
+    if (filtered.length === 0) {
+      console.log(chalk.yellow(`No tasks matching "${query}" found in project #${projectId}.`));
+      return;
+    }
+
+    console.log(chalk.cyan(`\nFound ${filtered.length} task(s) matching "${query}":\n`));
+
+    const rows = filtered.map(t => [
+      t.id,
+      t.title,
+      render.formatStatus(t.is_active),
+      render.formatPriority(t.priority),
+      t.owner_name || chalk.dim('Unassigned')
+    ]);
+
+    render.renderTable(['ID', 'Task Title', 'Status', 'Prio', 'Owner'], rows);
+  } catch (err: any) {
+    console.error(chalk.red.bold(`\nError searching tasks in project #${projectId}:`), err.message);
   }
 }

@@ -34,6 +34,14 @@ projectCmd
   .description('List all projects')
   .action(projects.listProjects);
 
+projectCmd
+  .command('columns <project_id>')
+  .alias('cols')
+  .description('List all columns in a project')
+  .action((projectId: string) => {
+    projects.listColumns(projectId);
+  });
+
 // Task Commands
 const taskCmd = program.command('task').alias('t').description('Manage tasks');
 
@@ -86,6 +94,26 @@ taskCmd
   .description('Move a task to a different column')
   .action((taskId: string, columnId: string) => {
     tasks.moveTask(taskId, columnId);
+  });
+
+taskCmd
+  .command('update <task_id>')
+  .alias('up')
+  .description('Update a task')
+  .option('-t, --title <title>', 'New title')
+  .option('-d, --description <desc>', 'New description')
+  .option('-p, --priority <int>', 'New priority (0-3)')
+  .option('--color <color>', 'New color (yellow, blue, red, green, purple, orange, cyan, grey)')
+  .action((taskId: string, options: { title?: string; description?: string; priority?: string; color?: string }) => {
+    tasks.updateTask({ task_id: taskId, ...options });
+  });
+
+taskCmd
+  .command('search <project_id> <query>')
+  .alias('find')
+  .description('Search tasks by title or description')
+  .action((projectId: string, query: string) => {
+    tasks.searchTasks(projectId, query);
   });
 
 taskCmd
