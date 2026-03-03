@@ -20,8 +20,8 @@ export function renderTable(head: string[], rows: any[][]): void {
 /**
  * Get a colored status label for a task.
  */
-export function formatStatus(status: string): string {
-  return status === '1' ? chalk.green('● OPEN') : chalk.gray('○ CLOSED');
+export function formatStatus(status: string | number): string {
+  return status == 1 ? chalk.green('● OPEN') : chalk.gray('○ CLOSED');
 }
 
 /**
